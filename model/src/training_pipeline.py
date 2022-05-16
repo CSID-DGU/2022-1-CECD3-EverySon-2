@@ -2,6 +2,7 @@ import os
 from typing import List, Optional
 
 import hydra
+import torch
 from omegaconf import DictConfig
 from pytorch_lightning import (
     Callback,
@@ -18,8 +19,8 @@ log = utils.get_logger(__name__)
 
 
 def train(config: DictConfig) -> Optional[float]:
-    """Contains the training pipeline. Can additionally evaluate model on a testset, using best
-    weights achieved during training.
+    """Contains the training pipeline.
+    Can additionally evaluate model on a testset, using best weights achieved during training.
 
     Args:
         config (DictConfig): Configuration composed by Hydra.
@@ -28,6 +29,7 @@ def train(config: DictConfig) -> Optional[float]:
         Optional[float]: Metric score for hyperparameter optimization.
     """
 
+    log.info(f"Using PyTorch Ver{torch.__version__}")
     # Set seed for random number generators in pytorch, numpy and python.random
     if config.get("seed"):
         seed_everything(config.seed, workers=True)
@@ -66,7 +68,11 @@ def train(config: DictConfig) -> Optional[float]:
     # Init lightning trainer
     log.info(f"Instantiating trainer <{config.trainer._target_}>")
     trainer: Trainer = hydra.utils.instantiate(
-        config.trainer, callbacks=callbacks, logger=logger, _convert_="partial"
+        config.trainer, 
+        callbacks=callbacks, 
+        logger=logger, 
+        _convert_="partial",
+        precision=16 if config.get("fp16") else 32
     )
 
     # Send some parameters from config to all lightning loggers
