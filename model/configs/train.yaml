@@ -3,10 +3,10 @@
 # specify here default training configuration
 defaults:
   - _self_
-  - datamodule: mnist.yaml
-  - model: mnist.yaml
+  - datamodule: koc_datamodule.yaml
+  - model: klue-robert-base.yaml
   - callbacks: default.yaml
-  - logger: null # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
+  - logger: wandb.yaml # set logger here or use command line (e.g. `python train.py logger=tensorboard`)
   - trainer: default.yaml
   - log_dir: default.yaml
 
@@ -34,7 +34,7 @@ defaults:
 original_work_dir: ${hydra:runtime.cwd}
 
 # path to folder with data
-data_dir: ${original_work_dir}/data/
+data_dir: ${original_work_dir}/data
 
 # pretty print config at the start of the run using Rich library
 print_config: True
@@ -50,7 +50,10 @@ train: True
 test: True
 
 # seed for random number generators in pytorch, numpy and python.random
-seed: null
+seed: 42
+
+# precision
+fp16: True
 
 # default name for the experiment, determines logging folder path
 # (you can overwrite this name in experiment configs)
