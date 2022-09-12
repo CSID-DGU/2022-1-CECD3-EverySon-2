@@ -1,0 +1,17 @@
+_target_: src.datamodules.emotion_datamodule.EMOTIONDataModule
+
+data_dir: ${paths.data_dir}data.csv
+batch_size: 64
+train_val_test_split: [8, 1, 1]
+num_workers: 4
+pin_memory: False
+num_labels: 6
+pretrained_model_name_or_path: ${model.net.pretrained_model_name_or_path}
+max_length: 256
+class_names:
+  - 행복
+  - 중립
+  - 분노
+  - 놀람
+  - 슬픔
+  - 걱정

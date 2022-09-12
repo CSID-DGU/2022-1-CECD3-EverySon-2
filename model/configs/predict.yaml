@@ -1,0 +1,18 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - datamodule: emotion_predict.yaml # choose datamodule with `predict_dataloader()` for prediction
+  - model: bert.yaml
+  - logger: null
+  - trainer: gpu.yaml
+  - paths: default.yaml
+  - extras: default.yaml
+  - hydra: default.yaml
+
+task_name: "predict"
+
+tags: ["dev"]
+
+# passing checkpoint path is necessary for evaluation
+ckpt_path: "logs/train/runs/2022-09-08_08-22-40/checkpoints/epoch_005.ckpt"

@@ -1,26 +1,24 @@
-import dotenv
-import hydra
-from omegaconf import DictConfig
 
-# load environment variables from `.env` file if it exists
-# recursively searches for `.env` in all folders starting from work dir
-dotenv.load_dotenv(override=True)
+# import pandas as pd
+# from tqdm import tqdm
+# with open("data/data.csv", "r") as f:
+#     lines = f.readlines()
+# df = pd.DataFrame([], columns=["text", "label"])
 
+# for i, line in tqdm(enumerate(lines)):
+#     tmp = line.split(",")
+#     label = tmp[-1]
+#     text = tmp[:-1]
+#     text = ",".join(text)
+#     df.loc[i] = [text.strip(), label.strip()]
 
-@hydra.main(config_path="configs/", config_name="test.yaml")
-def main(config: DictConfig):
+# print(df.head())
+# df.to_csv("data/predict.csv", encoding="UTF-8", index=False)
+import pandas as pd
 
-    # Imports can be nested inside @hydra.main to optimize tab completion
-    # https://github.com/facebookresearch/hydra/issues/934
-    from src import utils
-    from src.testing_pipeline import test
-
-    # Applies optional utilities
-    utils.extras(config)
-
-    # Evaluate model
-    return test(config)
-
-
-if __name__ == "__main__":
-    main()
+df = pd.read_csv("data/data.csv")
+print(len(df))
+df = df.drop_duplicates(subset=["text"])
+df.to_csv("data/data.csv", encoding="UTF-8", index=False)
+print(df.head())
+print(len(df))
