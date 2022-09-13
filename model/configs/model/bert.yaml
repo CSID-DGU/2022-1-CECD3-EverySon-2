@@ -1,0 +1,15 @@
+_target_: src.models.bert_module.BertForClassification
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.00005
+  weight_decay: 0.1
+
+num_labels: ${datamodule.num_labels}
+class_names: ${datamodule.class_names}
+freeze: false
+
+net:
+  _target_: src.models.components.bert.BertModel
+  pretrained_model_name_or_path: klue/roberta-base

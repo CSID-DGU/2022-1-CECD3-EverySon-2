@@ -1,0 +1,16 @@
+_target_: src.datamodules.predict_datamodule.PredictDataModule
+
+data_dir: ${paths.data_dir}predict.csv
+batch_size: 512
+num_workers: 4
+pin_memory: False
+num_labels: 6
+pretrained_model_name_or_path: ${model.net.pretrained_model_name_or_path}
+max_length: 256
+class_names:
+  - 행복
+  - 중립
+  - 분노
+  - 놀람
+  - 슬픔
+  - 걱정
