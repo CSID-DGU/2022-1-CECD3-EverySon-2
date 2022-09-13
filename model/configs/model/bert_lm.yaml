@@ -1,0 +1,15 @@
+_target_: src.models.bert_lm_module.BertForMaskedLM
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 6e-4
+  betas:
+    - 0.9
+    - 0.98
+  eps: 1e-6
+  weight_decay: 0.01
+
+net:
+  _target_: src.models.components.bert.BertMaskedLM
+  pretrained_model_name_or_path: klue/roberta-base

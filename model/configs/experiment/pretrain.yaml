@@ -1,0 +1,33 @@
+# @package _global_
+
+# to execute this experiment run:
+# python src/train.py experiment=pretrain
+
+defaults:
+  - override /datamodule: masked_lm.yaml
+  - override /model: bert_lm.yaml
+  - override /callbacks: default.yaml
+  - override /trainer: gpu.yaml
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+seed: 42
+
+trainer:
+  min_epochs: 1
+  max_epochs: 2
+
+datamodule:
+  batch_size: 64
+
+logger:
+  wandb:
+    project: "drsong"
+    entity: "binlee52"
+    name: "${model.net.pretrained_model_name_or_path}"
+
+extras:
+  ignore_warnings: True
+
+test: False
