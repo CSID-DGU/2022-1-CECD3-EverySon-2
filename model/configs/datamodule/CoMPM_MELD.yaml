@@ -1,0 +1,17 @@
+_target_: src.datamodules.CoMPM_MELD_datamodule.MELDDataModule
+
+data_dir: ${paths.data_dir}MELD/multi/
+batch_size: 16
+num_workers: 4
+pin_memory: False
+num_labels: 7
+pretrained_model_name_or_path: ${model.net.pretrained_model_name_or_path}
+max_length: 256
+class_names:
+  - anger
+  - disgust
+  - fear
+  - joy
+  - neutral
+  - sadness
+  - surprise

@@ -1,0 +1,25 @@
+_target_: src.models.CoMPM_module.CoMPM
+
+optimizer:
+  _target_: torch.optim.AdamW
+  _partial_: true
+  lr: 1e-5
+  weight_decay: 0.1
+
+num_labels: ${datamodule.num_labels}
+class_names: ${datamodule.class_names}
+freeze: false
+
+net:
+  _target_: src.models.CoMPM_module.ERC_model
+  pretrained_model_name_or_path: klue/roberta-base
+  clsNum: 7
+  freeze: false
+
+# Todo
+# scheduler:
+#   _target_: transformers.get_linear_schedule_with_warmup
+#   _partial_: true
+# warmup_ratio: 0.1
+# max_epochs: ${trainer.max_epochs}
+# len_train_dataloader: 625   # Todo: set train_steps from dataloader
