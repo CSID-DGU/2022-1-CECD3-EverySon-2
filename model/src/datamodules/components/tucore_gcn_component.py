@@ -375,7 +375,7 @@ def convert_examples_to_features(examples, max_length, tokenizer):
         input_ids = tokenizer.convert_tokens_to_ids(tokens)
 
         # The mask has 1 for real tokens and 0 for padding tokens. Only real
-        # tokens are attended to.
+                                                                                                                                                                                                                # tokens are attended to.
         input_mask = [1] * len(input_ids)
 
         # Zero-pad up to the sequence length.
@@ -946,10 +946,10 @@ class TUCOREGCNDataloader(DataLoader):
 
             yield {'input_ids':input_ids[:cur_bsz, :batch_max_length],
                    'token_type_ids': token_type_ids[:cur_bsz, :batch_max_length],
-                   'input_masks': input_mask[:cur_bsz, :batch_max_length],
+                   'attention_mask': input_mask[:cur_bsz, :batch_max_length],
                    'mention_ids': mention_id[:cur_bsz, :batch_max_length],
                    'speaker_ids': speaker_id[:cur_bsz, :batch_max_length],
-                   'label_ids': label_ids[:cur_bsz, :self.relation_num],
-                   'turn_masks': turn_masks[:cur_bsz, :batch_max_length, :batch_max_length],
+                   'labels': label_ids[:cur_bsz, :self.relation_num],
+                   'turn_mask': turn_masks[:cur_bsz, :batch_max_length, :batch_max_length],
                    'graphs': graph_list
-                   }
+            }

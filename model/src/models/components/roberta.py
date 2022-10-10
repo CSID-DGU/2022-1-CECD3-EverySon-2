@@ -50,7 +50,7 @@ class RobertaEmbeddings(hugRobertaEmbeddings):
             if input_ids is not None:
                 # Create the position ids from the input token ids. Any padded tokens remain padded.
                 position_ids = create_position_ids_from_input_ids(input_ids, self.padding_idx, past_key_values_length)
-            else:
+            else:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
                 position_ids = self.create_position_ids_from_inputs_embeds(inputs_embeds)
 
         if input_ids is not None:
@@ -348,27 +348,25 @@ if __name__ == "__main__":
     import os
     import sys
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__)))))
-    from datamodules.tucore_gcn_datamodule import *
-    from transformers import AutoTokenizer
-    tokenizer = AutoTokenizer.from_pretrained("klue/roberta-base")
-    trainset = TUCOREGCNDataset(
+    sys.path.append("/drive/GitHub/2022-1-CECD3-EverySon-2/model/")
+    from src.datamodules.tucore_gcn_datamodule import *
+    datamodule = TUCOREGCNDataModule(
         src_file="../../../data/MELD",
-        save_file="../../../data/MELD" + "/train_" + "BERT" + ".pkl",
-        max_seq_length=512,
-        tokenizer=tokenizer,
-        n_class=7,
-        encoder_type="BERT"
+        pretrained_model_name_or_path="klue/roberta-base",
+        num_labels=7,
+        batch_size=2,
     )
-    data = trainset[0]
-    input_ids = torch.tensor(data["input_ids"]).view(1, -1)
-    segment_ids = torch.tensor(data["segment_ids"]).view(1, -1)
-    input_masks = torch.tensor(data["input_mask"]).view(1, -1)
-    speaker_ids = torch.tensor(data["speaker_ids"]).view(1, -1)
-    label_ids = torch.tensor(data["label_ids"]).view(1, -1)
-    mention_ids = torch.tensor(data["mention_id"]).view(1, -1)
-    input_masks = torch.tensor(data["input_mask"]).view(1, -1)
+    datamodule.setup()
+    data = next(iter(datamodule.train_dataloader()))
+    input_ids = data["input_ids"]
+    segment_ids = data["token_type_ids"]
+    input_masks = data["input_masks"]
+    speaker_ids = data["speaker_ids"]
+    label_ids = data["label_ids"]
+    mention_ids = data["mention_ids"]
     model = RobertaModel.from_pretrained("klue/roberta-base")
     model.eval()
     # roberta do not use token_type_ids
-    model(input_ids=input_ids, token_type_ids=None,
+    outputs = model(input_ids=input_ids, token_type_ids=None,
           attention_mask=input_masks, speaker_ids=speaker_ids)
+    print(outputs)
