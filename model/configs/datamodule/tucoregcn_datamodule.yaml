@@ -1,0 +1,9 @@
+_target_: src.datamodules.tucoregcn_datamodule.TUCOREGCNDataModule
+
+src_file: ${paths.data_dir}MELD
+pretrained_model_name_or_path: ${model.roberta.pretrained_model_name_or_path}
+num_labels: 7
+encoder_type: "RoBERTa"
+max_length: 512
+window_size: 1
+batch_size: 2
