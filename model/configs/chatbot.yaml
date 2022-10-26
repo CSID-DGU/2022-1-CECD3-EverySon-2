@@ -1,0 +1,18 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - datamodule: chatbot_predict.yaml # choose datamodule with `predict_dataloader()` for prediction
+  - model: cos_sim_chatbot.yaml
+  - logger: null
+  - trainer: gpu.yaml
+  - paths: default.yaml
+  - extras: default.yaml
+  - hydra: default.yaml
+  - experiment: cos_sim_chatbot_pred.yaml
+
+chatbot_data_dir: ${paths.data_dir}chatbot/Wellness Conversation Script Dataset/wellness.xlsx
+
+task_name: "chatbot_predict"
+
+tags: ["dev"]

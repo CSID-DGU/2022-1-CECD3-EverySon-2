@@ -29,3 +29,7 @@ dgl-cu113
     -f https://data.dgl.ai/wheels/repo.html
 dglgo
     -f https://data.dgl.ai/wheels/repo.html
+
+# ------- chatbot server -------- #
+sentence_transformers  # sentence embedign
+openpyxl

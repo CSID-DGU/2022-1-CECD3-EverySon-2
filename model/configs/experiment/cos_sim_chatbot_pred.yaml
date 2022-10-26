@@ -1,0 +1,23 @@
+# @package _global_
+
+# to execute this experiment run:
+# python similarity_chatbot.py experiment=cos_sim_chatbot_pred
+
+defaults:
+  - override /datamodule: chatbot_predict.yaml
+  - override /model: cos_sim_chatbot.yaml
+  - override /trainer: gpu.yaml
+  - override /logger: null
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+seed: 42
+
+callbacks:
+  model_checkpoint:
+    monitor: null
+    save_last: True
+
+trainer:
+  max_epochs: 1
