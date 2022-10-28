@@ -10,19 +10,22 @@ from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
-class ChatbotPredictDataset(Dataset):
-    def __init__(self, encodings):
+class ChatbotDataset(Dataset):
+    def __init__(self, encodings, answers=None):
         super().__init__()
         self.encodings = encodings
+        self.answers=answers
 
     def __getitem__(self, index):
         item = {key: val[index] for key, val in self.encodings.items()}
+        if self.answers is not None:
+            item["answer"] = self.answers[index]
         return item
 
     def __len__(self):
         return len(self.encodings["input_ids"])
 
-class ChatbotPredictDataModule(LightningDataModule):
+class ChatbotDataModule(LightningDataModule):
     """LightningDataModule for EMOTION dataset.
 
     A DataModule implements 5 key methods:
@@ -90,7 +93,7 @@ class ChatbotPredictDataModule(LightningDataModule):
                 truncation=True,
                 add_special_tokens=True,
                 max_length=self.hparams.max_length,)
-            self.data_predict = ChatbotPredictDataset(encodings=tokenized_sentences)
+            self.data_predict = ChatbotDataset(encodings=tokenized_sentences)
 
     def predict_dataloader(self):
         self.setup()

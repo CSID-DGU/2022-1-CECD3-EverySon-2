@@ -38,3 +38,33 @@ class CosSimChatbot(pl.LightningModule):
         token_embeddings = model_output[0] #First element of model_output contains all token embeddings
         input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
         return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
+
+        
+if __name__ == "__main__":
+    import hydra
+    import omegaconf
+    import pyrootutils
+
+    root = pyrootutils.setup_root(__file__, pythonpath=True)
+
+    cfg = omegaconf.OmegaConf.create({"paths": {"data_dir": "null"},
+                                      "models": "null"})
+    cfg.paths.data_dir = "/home/sj/Project/2022-1-CECD3-EverySon-2/model/data/"
+    cfg.model = omegaconf.OmegaConf.load(root / "configs" / "model" / "cos_sim_chatbot.yaml")
+    model = hydra.utils.instantiate(cfg.model)
+    tokenizer = AutoTokenizer.from_pretrained(cfg.model.pretrained_model_name_or_path)
+    
+    text = "아 기분이 안좋네..."
+    label = "슬픔"
+
+    tokenizer_input = text + " [SEP] " + label
+    tokenized_sentences = tokenizer(
+        tokenizer_input,
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+        add_special_tokens=True,
+        max_length=256,)
+
+    y = model.predict_step(tokenized_sentences, batch_idx=0)
+    print(y)

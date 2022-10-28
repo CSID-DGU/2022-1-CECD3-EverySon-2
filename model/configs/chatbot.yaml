@@ -2,7 +2,7 @@
 
 defaults:
   - _self_
-  - datamodule: chatbot_predict.yaml # choose datamodule with `predict_dataloader()` for prediction
+  - datamodule: chatbot.yaml # choose datamodule with `predict_dataloader()` for prediction
   - model: cos_sim_chatbot.yaml
   - logger: null
   - trainer: gpu.yaml

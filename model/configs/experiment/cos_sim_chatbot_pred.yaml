@@ -4,7 +4,7 @@
 # python similarity_chatbot.py experiment=cos_sim_chatbot_pred
 
 defaults:
-  - override /datamodule: chatbot_predict.yaml
+  - override /datamodule: chatbot.yaml
   - override /model: cos_sim_chatbot.yaml
   - override /trainer: gpu.yaml
   - override /logger: null
