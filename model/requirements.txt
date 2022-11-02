@@ -31,5 +31,6 @@ dglgo
     -f https://data.dgl.ai/wheels/repo.html
 
 # ------- chatbot server -------- #
-sentence_transformers  # sentence embedign
+sentence_transformers  # sentence embeding
 openpyxl
+pyarrow                # for parquet

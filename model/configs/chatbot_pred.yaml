@@ -11,7 +11,7 @@ defaults:
   - hydra: default.yaml
   - experiment: cos_sim_chatbot_pred.yaml
 
-chatbot_data_dir: ${paths.data_dir}chatbot/Wellness Conversation Script Dataset/wellness.xlsx
+ckpt_path: "${paths.log_dir}/train/runs/2022-11-02_15-05-53/checkpoints/last.ckpt"
 
 task_name: "chatbot_predict"
 

@@ -1,5 +1,11 @@
 _target_: src.models.cos_sim_chatbot.CosSimChatbot
 
 pretrained_model_name_or_path: jhgan/ko-sroberta-multitask
+chatbot_embedding_path: ${paths.output_dir}/chatbot_db/chatbot_db.parquet
+chatbot_embedding_out: ${paths.output_dir}/chatbot_db/chatbot_db.parquet
 
-embedding_path: ${paths.data_dir}chatbot/Wellness Conversation Script Dataset/embedding.pt
+# dummy optimizer
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.0

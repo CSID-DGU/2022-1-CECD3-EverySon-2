@@ -82,36 +82,32 @@ def predict(cfg: DictConfig) -> Tuple[dict, dict]:
         utils.log_hyperparameters(object_dict)
 
     log.info("Starting predicting!")
-    preds = trainer.predict(model=model,
-                            dataloaders=dataloaders)
-
+    preds = sum(trainer.predict(model=model,
+                            dataloaders=dataloaders,
+                            ckpt_path=cfg.ckpt_path), [])
     log.info("Saving Result!")
     save_result(
-        data_dir=cfg.datamodule.data_dir,
+        data_dir=cfg.datamodule.pred_data_dir,
         output_dir=cfg.paths.output_dir,
         predictions=preds,
-        chatbot_data_dir=cfg.chatbot_data_dir
         )
 
     metric_dict = trainer.callback_metrics
     return metric_dict, object_dict
 
 
-def save_result(data_dir, output_dir, predictions, chatbot_data_dir):
+def save_result(data_dir, output_dir, predictions):
     import pandas as pd
     import os.path
 
     df = pd.read_csv(data_dir, encoding="UTF-8")
-    chatbot_df = pd.read_excel(chatbot_data_dir)
-    chatbot_df.rename(columns={'구분': 'label','유저': 'Q','챗봇': 'A'}, inplace=True)
-    chatbot_df.dropna(axis=0, inplace=True)
-    chatbot_df.reset_index(drop=True, inplace=True)
-    df["pred"] = predictions
-    df["pred"] = df["pred"].apply(lambda x: chatbot_df['A'][int(x)])
+    df["prediction"] = predictions
     df.to_csv(os.path.join(output_dir, "output.csv"), index=False)
+    log.info(f"input  : {(df['text'] + ' [SEP] ' + df['label']).tolist()}")
+    log.info(f"output : {df['prediction'].tolist()}")
 
 
-@hydra.main(version_base="1.2", config_path=root / "configs", config_name="chatbot.yaml")
+@hydra.main(version_base="1.2", config_path=root / "configs", config_name="chatbot_pred.yaml")
 def main(cfg: DictConfig):
     predict(cfg)
 

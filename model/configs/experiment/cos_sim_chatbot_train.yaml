@@ -1,7 +1,7 @@
 # @package _global_
 
 # to execute this experiment run:
-# python similarity_chatbot.py experiment=cos_sim_chatbot_pred
+# python train.py experiment=cos_sim_chatbot_train
 
 defaults:
   - override /datamodule: chatbot.yaml
@@ -13,16 +13,18 @@ defaults:
 # this allows you to overwrite only specified parameters
 
 model:
-  chatbot_embedding_path: ${paths.log_dir}train/runs/2022-11-02_15-05-53/chatbot_db/chatbot_db.parquet
+  chatbot_embedding_path: null
+
+test: False
 
 seed: 42
 
 callbacks:
+  early_stopping: null
   model_checkpoint:
+    save_top_k: 0
     monitor: null
-    save_last: False
+    save_last: True
 
 trainer:
   max_epochs: 1
-
-ckpt_path: "${paths.log_dir}/train/runs/2022-11-02_15-05-53/checkpoints/last.ckpt"
