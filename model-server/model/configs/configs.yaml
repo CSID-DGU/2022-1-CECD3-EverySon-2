@@ -1,0 +1,8 @@
+
+emotion:
+  _target_: src.models.CoMPM_module.CoMPM.load_from_checkpoint
+  checkpoint_path: checkpoint/model.ckpt
+
+nlg:
+  _target_: transformers.AutoModel
+  
