@@ -15,9 +15,9 @@ from typing import Union
 import os
 from transformers import AutoTokenizer
 
-class MELD_loader(Dataset):
+class CoMPM_Dataset(Dataset):
     def __init__(self, txt_file: str, dataclass: str='emotion'):
-        """MELD Dataset. File format as Ref.
+        """CoMPM Dataset. File format as Ref.
 
         Args:
             txt_file (str): Path of dataset file
@@ -33,19 +33,18 @@ class MELD_loader(Dataset):
         context = []
         context_speaker = []
         self.speakerNum = []
-        # 'anger', 'disgust', 'fear', 'joy', 'neutral', 'sadness', 'surprise'
-        emodict = {'anger': "anger", 'disgust': "disgust", 'fear': "fear", 'joy': "joy", 'neutral': "neutral", 'sadness': "sad", 'surprise': 'surprise'}
-        self.sentidict = {'positive': ["joy"], 'negative': ["anger", "disgust", "fear", "sadness"], 'neutral': ["neutral", "surprise"]}
+        # 'anger', 'disgust', 'fear', 'joy', 'neutral', 'sad', 'surprise'
+        emodict = {'anger': "anger", 'disgust': "disgust", 'fear': "fear", 'joy': "joy", 'neutral': "neutral", 'sad': "sad", 'surprise': 'surprise'}
+        self.sentidict = {'positive': ["joy"], 'negative': ["anger", "disgust", "fear", "sad"], 'neutral': ["neutral", "surprise"]}
         self.emoSet = set()
         self.sentiSet = set()
         for i, data in enumerate(dataset):
-            if i < 2:
-                continue
-            if data == '\n' and len(self.dialogs) > 0:
-                self.speakerNum.append(len(temp_speakerList))
-                temp_speakerList = []
-                context = []
-                context_speaker = []
+            if data == '\n':
+                if len(self.dialogs) > 0:
+                    self.speakerNum.append(len(temp_speakerList))
+                    temp_speakerList = []
+                    context = []
+                    context_speaker = []
                 continue
             speaker, utt, emo, senti = data.strip().split('\t')
             context.append(utt)
@@ -82,7 +81,7 @@ class MELD_loader(Dataset):
         """
         return self.dialogs[idx], self.labelList, self.sentidict
 
-class MELDDataModule(LightningDataModule):
+class CoMPMDataModule(LightningDataModule):
     """LightningDataModule for MEDIC dataset.
 
     A DataModule implements 5 key methods:
@@ -127,9 +126,9 @@ class MELDDataModule(LightningDataModule):
         # also ensures init params will be stored in ckpt
         self.save_hyperparameters(logger=False)
 
-        self.train_file = self.hparams.data_dir + 'MELD_train_ko.txt'
-        self.val_file = self.hparams.data_dir + 'MELD_dev_ko.txt'
-        self.test_file = self.hparams.data_dir + 'MELD_test_ko.txt'
+        self.train_file = self.hparams.data_dir + '_train_ko.txt'
+        self.val_file = self.hparams.data_dir + '_dev_ko.txt'
+        self.test_file = self.hparams.data_dir + '_test_ko.txt'
 
         self.data_train: Optional[Dataset] = None
         self.data_val: Optional[Dataset] = None
@@ -156,11 +155,11 @@ class MELDDataModule(LightningDataModule):
         """
         # load and split datasets only if not loaded already
         if not self.data_train:
-            self.data_train = MELD_loader(self.train_file)
+            self.data_train = CoMPM_Dataset(self.train_file)
         if not self.data_val:
-            self.data_val = MELD_loader(self.val_file)
+            self.data_val = CoMPM_Dataset(self.val_file)
         if not self.data_test:
-            self.data_test = MELD_loader(self.test_file)
+            self.data_test = CoMPM_Dataset(self.test_file)
 
     def train_dataloader(self):
         return DataLoader(
@@ -271,8 +270,8 @@ if __name__ == "__main__":
     import pyrootutils
 
     root = pyrootutils.setup_root(__file__, pythonpath=True)
-    cfg = omegaconf.OmegaConf.load(root / "configs" / "datamodule" / "CoMPM_MELD.yaml")
-    cfg.data_dir = str(root / "data" / "MELD" / "multi") + "/"
+    cfg = omegaconf.OmegaConf.load(root / "configs" / "datamodule" / "CoMPM_datamodule.yaml")
+    cfg.data_dir = str(root / "data" / "MELD" / "multi") + "/MELD"
     cfg.pretrained_model_name_or_path = "klue/bert-base"
     data = hydra.utils.instantiate(cfg)
     data.setup()
@@ -280,6 +279,6 @@ if __name__ == "__main__":
     for x in train_dataloader:
         print(x)
         break
-    train_dataset = MELD_loader(cfg.data_dir + "MELD_train_ko.txt")
+    train_dataset = CoMPM_Dataset(cfg.data_dir + "MELD_train_ko.txt")
     print(len(train_dataset))
     print(len(train_dataloader))
