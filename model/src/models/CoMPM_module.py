@@ -125,9 +125,9 @@ class CoMPM(LightningModule):
         self.test_acc = Accuracy()
 
         # f1-score
-        self.train_f1 = F1Score(num_classes=num_labels, average="macro")
-        self.val_f1 = F1Score(num_classes=num_labels, average="macro")
-        self.test_f1 = F1Score(num_classes=num_labels, average="macro")
+        self.train_f1 = F1Score(num_classes=num_labels, average="weighted")
+        self.val_f1 = F1Score(num_classes=num_labels, average="weighted")
+        self.test_f1 = F1Score(num_classes=num_labels, average="weighted")
 
         # for logging best so far validation accuracy
         self.val_acc_best = MaxMetric()
