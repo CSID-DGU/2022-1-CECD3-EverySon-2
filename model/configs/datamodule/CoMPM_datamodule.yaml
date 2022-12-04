@@ -1,6 +1,6 @@
-_target_: src.datamodules.CoMPM_MELD_datamodule.MELDDataModule
+_target_: src.datamodules.CoMPM_datamodule.CoMPMDataModule
 
-data_dir: ${paths.data_dir}MELD/multi/
+data_dir: ${paths.data_dir}MELD/multi/MELD
 batch_size: 16
 num_workers: 4
 pin_memory: False

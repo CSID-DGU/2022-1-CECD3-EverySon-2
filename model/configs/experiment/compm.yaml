@@ -1,0 +1,47 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - override /datamodule: CoMPM_datamodule.yaml
+  - override /model: CoMPM.yaml
+  - override /callbacks: default.yaml
+  - override /trainer: gpu.yaml
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+seed: 42
+
+trainer:
+  min_epochs: 1
+  max_epochs: 10
+  accumulate_grad_batches: 12
+  # mixed precision for extra speed-up
+  precision: 16
+
+model:
+  optimizer:
+    lr: 1e-5
+
+callbacks:
+  model_checkpoint:
+    monitor: "val/f1"
+    save_last: True
+    save_top_k: 1
+
+datamodule:
+  batch_size: 16
+  data_dir: ${paths.data_dir}dailydialog/dailydialog_facebook-nllb-200-1.3B
+
+logger:
+ wandb:
+  log_model: True
+  name: "CoMPM_DD_nllb-200-1.3B"
+  project: "sentiment-analysis"
+  entity: "everyson"
+
+extras:
+  ignore_warnings: True
+

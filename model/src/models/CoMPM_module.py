@@ -32,6 +32,8 @@ from torchmetrics import Accuracy, F1Score, ConfusionMatrix
 
 from pytorch_lightning import LightningModule
 
+import gc
+
 class ERC_model(nn.Module):
     def __init__(self,
                  clsNum,
@@ -108,7 +110,7 @@ class CoMPM(LightningModule):
     ):
         super().__init__()
 
-        self.save_hyperparameters(logger=False, ignore=["net"])
+        self.save_hyperparameters(logger=False)
 
         self.net = net
 
@@ -162,6 +164,11 @@ class CoMPM(LightningModule):
         # and then read it in some callback or in `training_epoch_end()` below
         # remember to always return loss from `training_step()` or else backpropagation will fail!
         return {"loss": loss}
+        
+    def training_step_end(self, outputs):
+        gc.collect()
+        torch.cuda.empty_cache()
+        return outputs["loss"]
 
     def train_epoch_end(self, outputs: List[Any]):
         self.train_acc.reset()
