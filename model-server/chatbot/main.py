@@ -2,12 +2,24 @@ import hydra
 import torch
 import torch.nn as nn
 
+from .src.compm import *
+
+class_names=[
+    "분노",
+    "혐오",
+    "공포",
+    "행복",
+    "중립",
+    "슬픔",
+    "놀람",
+]
 
 class Chatbot:
     def __init__(self, cfg):
         # self.emotion_recognition_model = hydra.utils.instantiate(cfg.emotion)
         # self.cos_sim_model = hydra.utils.instantiate(cfg.cos_sim)
         self.emotion_recognition_model = None
+        self.tokenizer = None
         self.cos_sim_model = None
         self.gpt = None
         self.gpt_tokenizer = None
@@ -19,6 +31,8 @@ class Chatbot:
             cfg.gpt, 
             pad_token_id=self.gpt_tokenizer.eos_token_id).to(device='cuda', non_blocking=True)
         self.gpt.eval()
+
+        self.tokenizer = hydra.utils.instantiate(cfg.tokenizer)
 
     def generate_chat(self, chats):
         prompt = self._read_prompt()
@@ -41,3 +55,12 @@ class Chatbot:
             prompt = f.readlines()
         prompt = "".join(prompt).strip()
         return prompt
+    
+    def emotion_recognition(self, chat):
+        input_token, speaker_token = preprocess(chat.speaker, chat.text, self.tokenizer)
+        outputs = self.emotion_recognition_model.forward(input_token.cuda(), speaker_token.cuda())
+        y = outputs.detach().cpu().squeeze().argmax(dim=-1)
+        label = class_names[y]
+        return {"label": label}
+
+    def cosim_generate(self, text)

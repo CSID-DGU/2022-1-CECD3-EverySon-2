@@ -18,5 +18,6 @@ for i in range(3):
     gen = chatbot.generate_chat(items)
     print(gen)
     items.append({"speaker": "챗봇", "text": gen})
-    items = items[-3:]
+    items = items[-1:]
+    print(items)
     
