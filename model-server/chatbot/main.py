@@ -33,7 +33,7 @@ class Chatbot:
         # self.gpt.eval()
 
         self.tokenizer = hydra.utils.instantiate(cfg.tokenizer)
-        self.emotion_recognition_model = hydra.utils.instantiate(cfg.emotion_recognition)
+        self.emotion_recognition_model = hydra.utils.instantiate(cfg.emotion_recognition).to("cuda:0")
         self.emotion_recognition_model.eval()
         
 
@@ -64,4 +64,7 @@ class Chatbot:
         outputs = self.emotion_recognition_model.forward(input_token.cuda(), speaker_token.cuda())
         y = outputs.detach().cpu().squeeze().argmax(dim=-1)
         label = class_names[y]
-        return {"label": label}
+        return label
+
+    def cosim_text(self, chat):
+        return chat.text[-1]

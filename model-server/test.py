@@ -18,5 +18,5 @@ class Chat:
         self.text = text
 
 
-chat = Chat([0], ["죽고 싶은 하루였어.."])
+chat = Chat([0, 1], ["오늘 기분은 어때?", "너무너무 행복한 하루였어!"])
 print(chatbot.emotion_recognition(chat))
