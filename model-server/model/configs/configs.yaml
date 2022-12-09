@@ -7,6 +7,16 @@ tokenizer:
   _target_: transformers.AutoTokenizer.from_pretrained
   pretrained_model_name_or_path: klue/roberta-base
 
+cos_sim_chatbot:
+  _target_: src.models.cos_sim_chatbot.CosSimChatbot.load_from_checkpoint
+  checkpoint_path: checkpoint/cos_sim_chatbot.ckpt
+
+chatbot_embedding_path: db/chatbot_db.parquet
+
+cos_sim_tokenizer:
+  _target_: transformers.AutoTokenizer.from_pretrained
+  pretrained_model_name_or_path: jhgan/ko-sroberta-multitask
+
 # gpt_tokenizer:
 #   _target_: transformers.AutoTokenizer.from_pretrained
 #   pretrained_model_name_or_path: kakaobrain/kogpt

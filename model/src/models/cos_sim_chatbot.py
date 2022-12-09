@@ -40,21 +40,23 @@ class CosSimChatbot(pl.LightningModule):
         # - embedding   : embedding
         # - answer      : chatbot response
         if chatbot_embedding_path is not None:  # train from file && predict
-            chatbot_df = self._read_chatbot_db(chatbot_embedding_path)
-            chatbot_embeddings = torch.tensor(chatbot_df["embedding"])
-            self.answer_dict = chatbot_df["answer"].to_dict()
-            self.key = len(chatbot_df["answer"])
-            self.chatbot_embedding_out = chatbot_embedding_path
+            self.load_chatbot_data(chatbot_embedding_path)
         else:   # train from scrach
             chatbot_embeddings = torch.zeros(0)
             self.answer_dict = {}
             self.key = 0
             self.chatbot_embedding_out = chatbot_embedding_out
         # self.register_buffer("chatbot_embeddings", chatbot_embeddings)
-        self.chatbot_embeddings = chatbot_embeddings
+            self.chatbot_embeddings = chatbot_embeddings
         self.embedding_list = []
-
         self.dummy_layer = torch.nn.Linear(1, 1, bias=False)
+
+    def load_chatbot_data(self, chatbot_embedding_path):
+        chatbot_df = self._read_chatbot_db(chatbot_embedding_path)
+        self.chatbot_embeddings = torch.tensor(chatbot_df["embedding"])
+        self.answer_dict = chatbot_df["answer"].to_dict()
+        self.key = len(chatbot_df["answer"])
+        self.chatbot_embedding_out = chatbot_embedding_path
 
     def _freeze_model(self):
         for param in self.model.parameters():

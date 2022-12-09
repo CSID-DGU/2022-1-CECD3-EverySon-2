@@ -14,6 +14,7 @@ class_names=[
     "놀람",
 ]
 
+
 class Chatbot:
     def __init__(self, cfg):
         # self.emotion_recognition_model = hydra.utils.instantiate(cfg.emotion)
@@ -33,9 +34,12 @@ class Chatbot:
         # self.gpt.eval()
 
         self.tokenizer = hydra.utils.instantiate(cfg.tokenizer)
-        self.emotion_recognition_model = hydra.utils.instantiate(cfg.emotion_recognition).to("cuda:0")
+        self.emotion_recognition_model = hydra.utils.instantiate(cfg.emotion_recognition)
         self.emotion_recognition_model.eval()
-        
+        self.cos_sim_tokenizer = hydra.utils.instantiate(cfg.cos_sim_tokenizer)
+        self.cos_sim_chatbot_model = hydra.utils.instantiate(cfg.cos_sim_chatbot)
+        self.cos_sim_chatbot_model.load_chatbot_data(cfg.chatbot_embedding_path)
+        self.cos_sim_model.eval()
 
     # def generate_chat(self, chats):
     #     prompt = self._read_prompt()
@@ -60,11 +64,30 @@ class Chatbot:
     #     return prompt
     
     def emotion_recognition(self, chat):
+        """
+        return last sentence emotion with considering multi-turn
+        :param chat:
+            chat.speaker: list of speakers in dialogue
+            chat.text: list of text in dialogue
+        :return:
+            one of class_names
+        """
         input_token, speaker_token = preprocess(chat.speaker, chat.text, self.tokenizer)
         outputs = self.emotion_recognition_model.forward(input_token.cuda(), speaker_token.cuda())
         y = outputs.detach().cpu().squeeze().argmax(dim=-1)
         label = class_names[y]
         return label
 
-    def cosim_text(self, chat):
-        return chat.text[-1]
+    def generate_chat(self, chat):
+        in_utt = chat.text[-1] + " [SEP] " + self.emotion_recognition(chat)
+        tokenized_sentences = self.cos_sim_tokenizer(
+            in_utt,
+            return_tensors="pt",
+            padding=True,
+            truncation=True,
+            add_special_tokens=True,
+            max_length=256, )
+        tokenized_sentences = {key: val.cuda() for key, val in tokenized_sentences.items()}
+        y = self.cos_sim_chatbot_model.predict_step(tokenized_sentences, batch_idx=0)
+        out_utt = y[0]
+        return out_utt
