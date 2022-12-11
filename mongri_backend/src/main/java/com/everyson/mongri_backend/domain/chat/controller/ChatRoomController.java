@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/usr/chat")
@@ -16,6 +19,11 @@ public class ChatRoomController {
 
     @GetMapping("/room")
     public ResponseEntity getChatRoom() {
-        return ResponseEntity.ok(chatRoomService.createRoom());
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        map.put("roomID", chatRoomService.createRoom());
+        map.put("message", "안녕하세요, 사용자님.\n오늘 하루는 어떠셨나요?");
+
+        return ResponseEntity.ok(map);
     }
 }
