@@ -1,0 +1,18 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - datamodule: chatbot.yaml # choose datamodule with `predict_dataloader()` for prediction
+  - model: cos_sim_chatbot.yaml
+  - logger: null
+  - trainer: gpu.yaml
+  - paths: default.yaml
+  - extras: default.yaml
+  - hydra: default.yaml
+  - experiment: cos_sim_chatbot_pred.yaml
+
+ckpt_path: "${paths.log_dir}/train/runs/2022-11-02_15-05-53/checkpoints/last.ckpt"
+
+task_name: "chatbot_predict"
+
+tags: ["dev"]

@@ -23,3 +23,14 @@ pre-commit      # hooks for applying linters on commit
 rich            # beautiful text formatting in terminal
 pytest          # tests
 # sh            # for running bash commands in some tests (linux/macos only)
+
+# ------- python graph -------- #
+dgl-cu113
+    -f https://data.dgl.ai/wheels/repo.html
+dglgo
+    -f https://data.dgl.ai/wheels/repo.html
+
+# ------- chatbot server -------- #
+sentence_transformers  # sentence embeding
+openpyxl
+pyarrow                # for parquet

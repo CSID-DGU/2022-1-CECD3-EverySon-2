@@ -1,0 +1,14 @@
+_target_: src.models.cos_sim_chatbot.CosSimChatbot
+
+pretrained_model_name_or_path: jhgan/ko-sroberta-multitask
+# chatbot_embedding_path: ${paths.output_dir}/chatbot_db/chatbot_db.parquet
+# chatbot_embedding_out: ${paths.output_dir}/chatbot_db/chatbot_db.parquet
+
+chatbot_embedding_path: logs/train/runs/2022-12-06_10-48-36//chatbot_db/chatbot_db.parquet
+chatbot_embedding_out: logs/train/runs/2022-12-06_10-48-36//chatbot_db/chatbot_db.parquet
+
+# dummy optimizer
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.0

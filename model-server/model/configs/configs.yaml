@@ -1,0 +1,35 @@
+
+emotion_recognition:
+  _target_: src.models.CoMPM_module.CoMPM.load_from_checkpoint
+  checkpoint_path: checkpoint/emotion_recognition_model.ckpt
+
+tokenizer:
+  _target_: transformers.AutoTokenizer.from_pretrained
+  pretrained_model_name_or_path: klue/roberta-base
+
+cos_sim_chatbot:
+  _target_: src.models.cos_sim_chatbot.CosSimChatbot.load_from_checkpoint
+  checkpoint_path: checkpoint/chatbot_last.ckpt
+
+chatbot_embedding_path: checkpoint/chatbot_db.parquet
+
+cos_sim_tokenizer:
+  _target_: transformers.AutoTokenizer.from_pretrained
+  pretrained_model_name_or_path: jhgan/ko-sroberta-multitask
+
+# gpt_tokenizer:
+#   _target_: transformers.AutoTokenizer.from_pretrained
+#   pretrained_model_name_or_path: kakaobrain/kogpt
+#   revision: KoGPT6B-ryan1.5b-float16
+#   bos_token: "[BOS]"
+#   eos_token: "[EOS]"
+#   unk_token: "[UNK]"
+#   pad_token: "[PAD]"
+#   mask_token: "[MASK]"
+
+# gpt:
+#   _target_: transformers.AutoModelForCausalLM.from_pretrained
+#   pretrained_model_name_or_path: kakaobrain/kogpt
+#   revision: KoGPT6B-ryan1.5b-float16
+#   torch_dtype: auto
+#   low_cpu_mem_usage: True

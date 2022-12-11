@@ -1,0 +1,14 @@
+_target_: src.models.tucoregcn_module.Tucoregcn
+
+optimizer:
+  _target_: torch.optim.AdamW
+  _partial_: true
+  lr: 0.00005
+  weight_decay: 0.1
+
+num_labels: ${datamodule.num_labels}
+
+roberta:
+  _target_: src.models.components.roberta.RobertaModel.from_pretrained
+  pretrained_model_name_or_path: roberta-base
+
