@@ -10,8 +10,8 @@ import java.util.Map;
 @Service
 public class ChatRoomService {
 
-    public String createRoom(String sid) {
-        ChatRoom chatRoom = ChatRoom.create(sid);
+    public String createRoom() {
+        ChatRoom chatRoom = ChatRoom.create();
 
         return chatRoom.getRoomId();
     }
