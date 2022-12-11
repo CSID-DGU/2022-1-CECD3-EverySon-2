@@ -40,21 +40,23 @@ class CosSimChatbot(pl.LightningModule):
         # - embedding   : embedding
         # - answer      : chatbot response
         if chatbot_embedding_path is not None:  # train from file && predict
-            chatbot_df = self._read_chatbot_db(chatbot_embedding_path)
-            chatbot_embeddings = torch.tensor(chatbot_df["embedding"])
-            self.answer_dict = chatbot_df["answer"].to_dict()
-            self.key = len(chatbot_df["answer"])
-            self.chatbot_embedding_out = chatbot_embedding_path
+            self.load_chatbot_data(chatbot_embedding_path)
         else:   # train from scrach
             chatbot_embeddings = torch.zeros(0)
             self.answer_dict = {}
             self.key = 0
             self.chatbot_embedding_out = chatbot_embedding_out
         # self.register_buffer("chatbot_embeddings", chatbot_embeddings)
-        self.chatbot_embeddings = chatbot_embeddings
+            self.chatbot_embeddings = chatbot_embeddings
         self.embedding_list = []
-
         self.dummy_layer = torch.nn.Linear(1, 1, bias=False)
+
+    def load_chatbot_data(self, chatbot_embedding_path):
+        chatbot_df = self._read_chatbot_db(chatbot_embedding_path)
+        self.chatbot_embeddings = torch.tensor(chatbot_df["embedding"])
+        self.answer_dict = chatbot_df["answer"].to_dict()
+        self.key = len(chatbot_df["answer"])
+        self.chatbot_embedding_out = chatbot_embedding_path
 
     def _freeze_model(self):
         for param in self.model.parameters():
@@ -154,13 +156,13 @@ if __name__ == "__main__":
 
     root = pyrootutils.setup_root(__file__, pythonpath=True)
 
-    cfg = omegaconf.OmegaConf.create({"paths": {"data_dir": "null"},
-                                      "models": "null"})
-    cfg.paths.data_dir = "/home/sj/Project/2022-1-CECD3-EverySon-2/model/data/"
-    cfg.model = omegaconf.OmegaConf.load(root / "configs" / "model" / "cos_sim_chatbot.yaml")
-    model = hydra.utils.instantiate(cfg.model)
-    model = CosSimChatbot.load_from_checkpoint("logs/train/runs/2022-10-29_00-57-07/checkpoints/last.ckpt")
-    tokenizer = AutoTokenizer.from_pretrained(cfg.model.pretrained_model_name_or_path)
+    # cfg = omegaconf.OmegaConf.create({"paths": {"data_dir": "null", "output_dir": "logs/train/runs/2022-12-06_10-48-36/chatbot_db"},
+    #                                   "model": "null"})
+    # cfg.paths.data_dir = "/home/ubuntu/hanbin/2022-1-CECD3-EverySon-2/model/data/"
+    cfg = omegaconf.OmegaConf.load(root / "configs" / "model" / "cos_sim_chatbot.yaml")
+    model = hydra.utils.instantiate(cfg)
+    model = CosSimChatbot.load_from_checkpoint("logs/train/runs/2022-12-06_10-48-36/checkpoints/last.ckpt")
+    tokenizer = AutoTokenizer.from_pretrained(cfg.pretrained_model_name_or_path)
     
     text = "아 기분이 안좋네..."
     label = "슬픔"
@@ -174,8 +176,10 @@ if __name__ == "__main__":
         add_special_tokens=True,
         max_length=256,)
 
-    y = model.predict_step(tokenized_sentences, batch_idx=0)
-    print(y)
+    print(tokenized_sentences)
+    print(model.answer_dict)
+    # y = model.predict_step(tokenized_sentences, batch_idx=0)
+    # print(y)
 
-    model2 = CosSimChatbot.load_from_checkpoint("logs/train/runs/2022-10-29_00-57-07/checkpoints/last.ckpt")
-    print(model2.key)
+    # model2 = CosSimChatbot.load_from_checkpoint("logs/train/runs/2022-12-06_10-48-36/checkpoints/last.ckpt")
+    # print(model2.key)
