@@ -2,7 +2,7 @@ import hydra
 import torch
 import torch.nn as nn
 
-from .src.compm import *
+from .utils.compm import *
 
 class_names=[
     "분노",
@@ -21,7 +21,7 @@ class Chatbot:
         # self.cos_sim_model = hydra.utils.instantiate(cfg.cos_sim)
         self.emotion_recognition_model = None
         self.tokenizer = None
-        self.cos_sim_model = None
+        self.cos_sim_chatbot_model = None
         self.gpt = None
         self.gpt_tokenizer = None
         self.load_model(cfg)
@@ -35,11 +35,13 @@ class Chatbot:
 
         self.tokenizer = hydra.utils.instantiate(cfg.tokenizer)
         self.emotion_recognition_model = hydra.utils.instantiate(cfg.emotion_recognition)
+        self.emotion_recognition_model = self.emotion_recognition_model.cuda()
         self.emotion_recognition_model.eval()
         self.cos_sim_tokenizer = hydra.utils.instantiate(cfg.cos_sim_tokenizer)
         self.cos_sim_chatbot_model = hydra.utils.instantiate(cfg.cos_sim_chatbot)
+        self.cos_sim_chatbot_model = self.cos_sim_chatbot_model.cuda()
         self.cos_sim_chatbot_model.load_chatbot_data(cfg.chatbot_embedding_path)
-        self.cos_sim_model.eval()
+        self.cos_sim_chatbot_model.eval()
 
     # def generate_chat(self, chats):
     #     prompt = self._read_prompt()
@@ -78,8 +80,9 @@ class Chatbot:
         label = class_names[y]
         return label
 
-    def generate_chat(self, chat):
-        in_utt = chat.text[-1] + " [SEP] " + self.emotion_recognition(chat)
+    def generate_chat_and_emotion_recognition(self, chat):
+        label = self.emotion_recognition(chat)
+        in_utt = chat.text[-1] + " [SEP] " + label
         tokenized_sentences = self.cos_sim_tokenizer(
             in_utt,
             return_tensors="pt",
@@ -90,4 +93,4 @@ class Chatbot:
         tokenized_sentences = {key: val.cuda() for key, val in tokenized_sentences.items()}
         y = self.cos_sim_chatbot_model.predict_step(tokenized_sentences, batch_idx=0)
         out_utt = y[0]
-        return out_utt
+        return out_utt, label

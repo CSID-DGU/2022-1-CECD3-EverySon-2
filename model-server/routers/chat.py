@@ -31,10 +31,17 @@ class Chat(BaseModel):
 @router.on_event("startup")
 async def startup_event():
     chat = Chat(speaker = [0, 1], text=["오늘 기분은 어때?", "너무너무 행복한 하루였어!"])
-    chatbot.emotion_recognition(chat)
+    chatbot.generate_chat_and_emotion_recognition(chat)
     
-@router.post("/")
-async def predict_label(chat: Chat):
+@router.post("/predict")
+async def predict(chat: Chat):
     assert len(chat.speaker) == len(chat.text)
     label = chatbot.emotion_recognition(chat)
     return {"label": label}
+
+
+@router.post("/generate")
+async def generate(chat: Chat):
+    assert len(chat.speaker) == len(chat.text)
+    text, label = chatbot.generate_chat_and_emotion_recognition(chat)
+    return {"text": text, "label": label}

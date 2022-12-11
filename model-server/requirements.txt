@@ -17,3 +17,9 @@ pyrootutils     # standardizing the project root setup
 fastapi
 pydantic
 uvicorn
+
+
+# ------- chatbot server -------- #
+sentence_transformers  # sentence embeding
+openpyxl
+pyarrow                # for parquet
