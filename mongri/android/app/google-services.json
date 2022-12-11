@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "897938226186",
+    "project_id": "mongri-everyson",
+    "storage_bucket": "mongri-everyson.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:897938226186:android:22cd2ddea7a63f7f7373f3",
+        "android_client_info": {
+          "package_name": "com.everyson.mongri"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "897938226186-5u413pbpfe083uhprj7ibifggctiqgol.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.everyson.mongri",
+            "certificate_hash": "d1f660c2b77291aefc6fd09a6fb225d2d3ea420b"
+          }
+        },
+        {
+          "client_id": "897938226186-jntb3gmkagegdd71odrjv0nejjrqkf1k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYx0IJ3Xi8VHSAdkUk7kjsmGK88DaK9cw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "897938226186-jntb3gmkagegdd71odrjv0nejjrqkf1k.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "897938226186-d67lr0vfijnuhdos05o6ssnjg4h5dl2f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.everyson.mongri"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
